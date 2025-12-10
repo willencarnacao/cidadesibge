@@ -1,0 +1,11 @@
+﻿municipio_input,populacao_input,municipio_ibge,uf,regiao,id_ibge,status
+Niteroi,515317,Niterói,RJ,Sudeste,3303302,OK
+Sao Gonçalo,1091737,,,,,AMBIGUO
+Sao Paulo,12396372,,,,,AMBIGUO
+Belo Horzionte,2530701,,,,,NAO_ENCONTRADO
+Florianopolis,516524,,,,,AMBIGUO
+Santo Andre,723889,,,,,AMBIGUO
+Santoo Andre,700000,,,,,NAO_ENCONTRADO
+Rio de Janeiro,6718903,Rio de Janeiro,RJ,Sudeste,3304557,OK
+Curitba,1963726,,,,,NAO_ENCONTRADO
+Brasilia,3094325,,,,,AMBIGUO
