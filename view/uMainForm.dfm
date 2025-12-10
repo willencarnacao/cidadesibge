@@ -34,6 +34,7 @@ object frmMain: TfrmMain
       Height = 113
       Caption = 'Dados de login Supabase'
       TabOrder = 1
+      Visible = False
       object lblEmail: TLabel
         Left = 24
         Top = 17

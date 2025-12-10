@@ -11,7 +11,7 @@ uses
   uIbgeService in 'service\uIbgeService.pas',
   uSupabaseService in 'service\uSupabaseService.pas',
   uMunicipio in 'model\uMunicipio.pas',
-  uStats in 'model\uStats.pas',
+  uStatsResult in 'model\uStatsResult.pas',
   uStringHelper in 'uStringHelper.pas';
 
 {$R *.res}

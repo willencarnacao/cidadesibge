@@ -23,7 +23,7 @@ uses
   uStatsController,
   uResultadoCsvController,
   uSubmitController,
-  uStats;
+  uStatsResult;
 
 class procedure TCsvController.Processar(Memo: TMemo);
 var
@@ -72,7 +72,12 @@ begin
     Stats := TStatsController.Calcular(Resultados);
 
     // Envio para API (Supabase)
-    TSubmitController.Enviar(Stats);
+    TSubmitController.Enviar(
+	  'https://mynxlubykylncinttggu.functions.supabase.co/ibge-submit',
+    'eyJhbGciOiJIUzI1NiIsImtpZCI6ImR0TG03UVh1SkZPVDJwZEciLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL215bnhsdWJ5a3lsbmNpbnR0Z2d1LnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJlMDg3NWM1YS05OGYzLTQ5NzItYmU3Zi1hOTNlZmY0N2I3ZWYiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzY1NDAxNTk5LCJpYXQiOjE3NjUzOTc5OTksImVtYWlsIjoid2lsbC5lbmNhcm5hY2FvQGdtYWlsLmNvbSIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZW1haWwiLCJwcm92aWRlcnMiOlsiZW1haWwiXX0sInVzZXJfbWV0YWRhdGEiOnsiZW1haWwiOiJ3aWxsLmVuY2FybmFjYW9AZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5vbWUiOiJXaWxpYW4gS3VudHogZGEgRW5jYXJuYcOnw6NvIiwicGhvbmVfdmVyaWZpZWQiOmZhbHNlLCJzdWIiOiJlMDg3NWM1YS05OGYzLTQ5NzItYmU3Zi1hOTNlZmY0N2I3ZWYifSwicm9sZSI6ImF1dGhlbnRpY2F0ZWQiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTc2NTM5Nzk5OX1dLCJzZXNzaW9uX2lkIjoiZWQ1YzYyMzMtMDkxNS00ZDExLTg1N2ItMmJjOWM0MzY0OGRjIiwiaXNfYW5vbnltb3VzIjpmYWxzZX0.fILv52Utzq06CXqPhQs0LipAPPVOElW5V7mUMRpXhdk',
+	  Stats,
+    Memo
+	);
 
     if Assigned(Memo) then
       Memo.Lines.Add('Processamento concluído.');

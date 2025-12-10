@@ -106,7 +106,7 @@
         <DCCReference Include="service\uIbgeService.pas"/>
         <DCCReference Include="service\uSupabaseService.pas"/>
         <DCCReference Include="model\uMunicipio.pas"/>
-        <DCCReference Include="model\uStats.pas"/>
+        <DCCReference Include="model\uStatsResult.pas"/>
         <DCCReference Include="uStringHelper.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>

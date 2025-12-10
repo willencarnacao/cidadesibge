@@ -4,76 +4,89 @@ interface
 
 uses
   System.Generics.Collections,
-  uMunicipio, uStringHelper;
+  uMunicipio, uStringHelper,
+  uIbgeService;
 
 type
   TIbgeController = class
   public
-    class function Processar(Inputs: TObjectList<TMunicipioInput>): TObjectList<TMunicipioResultado>;
+    class function Processar(const Inputs: TObjectList<TMunicipioInput>): TObjectList<TMunicipioResultado>;
+    class function MatchMunicipio(const NomeDigitado: string; const Lista: TArray<TIbgeMunicipio>): Integer;
   end;
 
 implementation
 
 uses
-  uIbgeService,
   System.SysUtils;
 
-class function TIbgeController.Processar(Inputs: TObjectList<TMunicipioInput>): TObjectList<TMunicipioResultado>;
+class function TIbgeController.MatchMunicipio(const NomeDigitado: string;
+  const Lista: TArray<TIbgeMunicipio>): Integer;
+var
+  NomeNorm, CurrNorm: string;
+  I: Integer;
+  Dist, BestDist, BestIdx: Integer;
+begin
+  Result := -1;
+
+  NomeNorm := NormalizarTexto(NomeDigitado);;
+  BestDist := MaxInt;
+  BestIdx  := -1;
+
+  for I := 0 to High(Lista) do
+  begin
+    CurrNorm := NormalizarTexto(Lista[I].Nome);
+
+    if NomeNorm = CurrNorm then
+      Exit(I);
+
+    Dist := LevenshteinDist(NomeNorm, CurrNorm);
+
+    if Dist < BestDist then
+    begin
+      BestDist := Dist;
+      BestIdx  := I;
+    end;
+  end;
+
+  // tolerância
+  if BestDist <= 2 then
+    Result := BestIdx;
+end;
+
+class function TIbgeController.Processar(const Inputs: TObjectList<TMunicipioInput>): TObjectList<TMunicipioResultado>;
 var
   ListaIbge: TArray<TIbgeMunicipio>;
-  Input: TMunicipioInput;
-  Res: TMunicipioResultado;
-  Mun: TIbgeMunicipio;
-  NomeIn, NomeIbge: string;
-  MatchList: array of TIbgeMunicipio;
+  I, Idx: Integer;
+  Item: TMunicipioResultado;
 begin
   Result := TObjectList<TMunicipioResultado>.Create(True);
 
   ListaIbge := GetMunicipios;
 
-  for Input in Inputs do
+  for I := 0 to Inputs.Count - 1 do
   begin
-    Res := TMunicipioResultado.Create;
-    Res.MunicipioInput := Input.Nome;
-    Res.PopulacaoInput := Input.Populacao;
+    Item := TMunicipioResultado.Create;
+    Item.MunicipioInput := Inputs[I].Nome;
+    Item.PopulacaoInput := Inputs[I].Populacao;
 
-    NomeIn := NormalizarTexto(Input.Nome);
-    SetLength(MatchList, 0);
+    Idx := MatchMunicipio(Inputs[I].Nome, ListaIbge);
 
-    // Busca candidatos
-    for Mun in ListaIbge do
+    if Idx >= 0 then
     begin
-      NomeIbge := NormalizarTexto(Mun.Nome);
-
-      if (NomeIbge = NomeIn) or
-         (NomeIbge.StartsWith(NomeIn)) or
-         (NomeIn.StartsWith(NomeIbge)) then
-      begin
-        SetLength(MatchList, Length(MatchList)+1);
-        MatchList[High(MatchList)] := Mun;
-      end;
-    end;
-
-    // Decisão final
-    if Length(MatchList) = 1 then
-    begin
-      Res.MunicipioIbge := MatchList[0].Nome;
-      Res.UF := MatchList[0].UF;
-      Res.Regiao := MatchList[0].Regiao;
-      Res.IdIbge := MatchList[0].Id;
-      Res.Status := 'OK';
-    end
-    else if Length(MatchList) > 1 then
-    begin
-      Res.Status := 'AMBIGUO';
+      Item.MunicipioIbge := ListaIbge[Idx].Nome;
+      Item.UF            := ListaIbge[Idx].UF;
+      Item.Regiao        := ListaIbge[Idx].Regiao;
+      Item.IdIbge        := ListaIbge[Idx].Id;
+      Item.Status        := 'OK';
     end
     else
     begin
-      Res.Status := 'NAO_ENCONTRADO';
+      Item.Status := 'NAO_ENCONTRADO';
     end;
 
-    Result.Add(Res);
+    Result.Add(Item);
   end;
 end;
+
 
 end.
